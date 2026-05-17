@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>T.O.R.C.H — 12.13.2026</title>
+  <meta name="description" content="Something is igniting. 12.13.2026" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=IBM+Plex+Mono:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet" />
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --red:    #e8352a;
+      --blue:   #1f6fd0;
+      --yellow: #f5c918;
+      --green:  #2ea84a;
+      --cream:  #ede9e2;
+      --bg:     #06060a;
+      --mid:    rgba(237,233,226,0.45);
+      --faint:  rgba(237,233,226,0.18);
+      --ghost:  rgba(237,233,226,0.07);
+    }
+
+    html, body {
+      width: 100%; height: 100%;
+      background: var(--bg);
+      color: var(--cream);
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── Grain overlay ──────────────────────────────── */
+    body::after {
+      content: '';
+      position: fixed; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+      opacity: 0.028;
+      pointer-events: none;
+      z-index: 999;
+    }
+
+    /* ── Radial bg glow ─────────────────────────────── */
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background: radial-gradient(ellipse 60% 55% at 50% 42%, rgba(31,111,208,0.07) 0%, transparent 70%),
+                  radial-gradient(ellipse 40% 35% at 50% 42%, rgba(232,53,42,0.05) 0%, transparent 60%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ── Canvas ─────────────────────────────────────── */
+    #canvas {
+      position: fixed; inset: 0;
+      width: 100%; height: 100%;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    /* ── Layout ─────────────────────────────────────── */
+    .site {
+      position: relative; z-index: 2;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 6rem 2rem 5rem;
+      gap: 0;
+    }
+
+    /* ── Top label ──────────────────────────────────── */
+    .transmission {
+      position: fixed;
+      top: 2.2rem; left: 50%;
+      transform: translateX(-50%);
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.55rem;
+      font-weight: 300;
+      letter-spacing: 0.45em;
+      color: rgba(237,233,226,0.18);
+      white-space: nowrap;
+      text-transform: uppercase;
+      animation: fadeIn 2s ease 0.5s both;
+    }
+
+    /* ── Corner coords ──────────────────────────────── */
+    .corner {
+      position: fixed;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.5rem;
+      font-weight: 300;
+      letter-spacing: 0.2em;
+      color: rgba(237,233,226,0.1);
+      line-height: 1.8;
+      animation: fadeIn 2s ease 1.5s both;
+    }
+    .corner-tl { top: 1.8rem; left: 2rem; }
+    .corner-tr { top: 1.8rem; right: 2rem; text-align: right; }
+    .corner-bl { bottom: 1.8rem; left: 2rem; }
+    .corner-br { bottom: 1.8rem; right: 2rem; text-align: right; }
+    @media (max-width: 600px) { .corner { display: none; } }
+
+    /* ── Logo ───────────────────────────────────────── */
+    .logo-wrap {
+      position: relative;
+      width: clamp(160px, 26vw, 260px);
+      aspect-ratio: 1;
+      margin-bottom: 3.5rem;
+      animation: riseIn 1.4s cubic-bezier(0.22,1,0.36,1) 0.2s both;
+    }
+
+    .logo-wrap img {
+      width: 100%; height: 100%;
+      object-fit: contain;
+      animation: breathe 5s ease-in-out infinite;
+    }
+
+    @keyframes breathe {
+      0%,100% {
+        filter:
+          drop-shadow(0 0 18px rgba(232,53,42,0.22))
+          drop-shadow(0 0 50px rgba(31,111,208,0.12))
+          drop-shadow(0 0 90px rgba(245,201,24,0.05));
+      }
+      50% {
+        filter:
+          drop-shadow(0 0 32px rgba(232,53,42,0.40))
+          drop-shadow(0 0 80px rgba(31,111,208,0.22))
+          drop-shadow(0 0 140px rgba(245,201,24,0.10))
+          drop-shadow(0 0 200px rgba(46,168,74,0.06));
+      }
+    }
+
+    /* ── Headline ───────────────────────────────────── */
+    .headline {
+      text-align: center;
+      margin-bottom: 3.8rem;
+      animation: riseIn 1.4s cubic-bezier(0.22,1,0.36,1) 0.5s both;
+    }
+
+    .headline h1 {
+      font-family: 'Cinzel', serif;
+      font-weight: 900;
+      font-size: clamp(1.35rem, 4.2vw, 2.9rem);
+      letter-spacing: 0.18em;
+      color: var(--cream);
+      line-height: 1.25;
+      margin-bottom: 1.1rem;
+    }
+
+    .headline p {
+      font-family: 'IBM Plex Mono', monospace;
+      font-weight: 300;
+      font-style: italic;
+      font-size: clamp(0.65rem, 1.4vw, 0.8rem);
+      letter-spacing: 0.38em;
+      color: var(--mid);
+      text-transform: uppercase;
+    }
+
+    /* ── Countdown ──────────────────────────────────── */
+    .countdown-wrap {
+      display: flex;
+      align-items: flex-start;
+      gap: clamp(1.2rem, 3.5vw, 3rem);
+      margin-bottom: 1.8rem;
+      animation: riseIn 1.4s cubic-bezier(0.22,1,0.36,1) 0.8s both;
+    }
+
+    .cd-unit {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.6rem;
+    }
+
+    .cd-num {
+      font-family: 'IBM Plex Mono', monospace;
+      font-weight: 400;
+      font-size: clamp(2.8rem, 9vw, 6rem);
+      line-height: 1;
+      color: var(--cream);
+      min-width: 2ch;
+      text-align: center;
+      position: relative;
+    }
+
+    /* Underline rule */
+    .cd-num::after {
+      content: '';
+      position: absolute;
+      bottom: -3px; left: 0; right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--faint), transparent);
+    }
+
+    .cd-label {
+      font-family: 'IBM Plex Mono', monospace;
+      font-weight: 300;
+      font-size: 0.52rem;
+      letter-spacing: 0.38em;
+      color: rgba(237,233,226,0.22);
+      text-transform: uppercase;
+    }
+
+    .cd-sep {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: clamp(2rem, 6vw, 4.2rem);
+      color: rgba(237,233,226,0.08);
+      line-height: 1;
+      margin-top: 0.05em;
+      user-select: none;
+    }
+
+    /* Tick flash */
+    @keyframes tick {
+      0%   { opacity: 1; }
+      12%  { opacity: 0.4; }
+      25%  { opacity: 1; }
+    }
+    .flash { animation: tick 0.25s ease; }
+
+    /* ── Date tag ───────────────────────────────────── */
+    .date-tag {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.6rem;
+      letter-spacing: 0.5em;
+      color: rgba(237,233,226,0.15);
+      margin-bottom: 3.5rem;
+      text-transform: uppercase;
+      animation: riseIn 1.4s cubic-bezier(0.22,1,0.36,1) 1s both;
+    }
+
+
+    /* ── Bottom signal bar ──────────────────────────── */
+    .signal-bar {
+      position: fixed;
+      bottom: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg,
+        var(--red), var(--blue), var(--yellow), var(--green), var(--blue), var(--red)
+      );
+      background-size: 400% 100%;
+      animation: signalFlow 10s linear infinite;
+      opacity: 0.5;
+      z-index: 10;
+    }
+    @keyframes signalFlow {
+      0%   { background-position: 0% 0%; }
+      100% { background-position: 400% 0%; }
+    }
+
+    /* ── Shared animations ──────────────────────────── */
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to   { opacity: 1; }
+    }
+    @keyframes riseIn {
+      from { opacity: 0; transform: translateY(22px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── Responsive ─────────────────────────────────── */
+    @media (max-width: 480px) {
+      .countdown-wrap { gap: 0.9rem; }
+      .cd-sep { font-size: 1.8rem; }
+      .headline h1 { letter-spacing: 0.1em; }
+    }
+  </style>
+</head>
+<body>
+
+<canvas id="canvas"></canvas>
+
+<div class="transmission">TRANSMISSION INCOMING &nbsp;//&nbsp; STAND BY</div>
+
+<div class="corner corner-tl">37°33'N<br>127°0'E</div>
+<div class="corner corner-tr">SIG-001<br>CLASSIFIED</div>
+<div class="corner corner-bl">FREQ&nbsp;·&nbsp;UNKNOWN</div>
+<div class="corner corner-br">ORIGIN&nbsp;·&nbsp;——</div>
+
+<main class="site">
+
+  <div class="logo-wrap">
+    <img src="images/Hero.png" alt="T.O.R.C.H" />
+  </div>
+
+  <div class="headline">
+    <h1>NOT ALL LIGHT<br>CAN BE SEEN.</h1>
+    <p>Something is igniting.</p>
+  </div>
+
+  <div class="countdown-wrap" id="countdown">
+    <div class="cd-unit">
+      <div class="cd-num" id="cd-days">000</div>
+      <div class="cd-label">Days</div>
+    </div>
+    <div class="cd-sep">:</div>
+    <div class="cd-unit">
+      <div class="cd-num" id="cd-hours">00</div>
+      <div class="cd-label">Hours</div>
+    </div>
+    <div class="cd-sep">:</div>
+    <div class="cd-unit">
+      <div class="cd-num" id="cd-mins">00</div>
+      <div class="cd-label">Minutes</div>
+    </div>
+    <div class="cd-sep">:</div>
+    <div class="cd-unit">
+      <div class="cd-num" id="cd-secs">00</div>
+      <div class="cd-label">Seconds</div>
+    </div>
+  </div>
+
+  <div class="date-tag">12 · 13 · 2026</div>
+
+</main>
+
+<div class="signal-bar"></div>
+
+<script>
+// ── Countdown ──────────────────────────────────────────────────
+const TARGET = new Date('2026-12-13T00:00:00');
+
+function pad(n, w = 2) { return String(n).padStart(w, '0'); }
+
+function tick() {
+  const now  = new Date();
+  const diff = TARGET - now;
+
+  if (diff <= 0) {
+    ['cd-days','cd-hours','cd-mins','cd-secs'].forEach(id => {
+      document.getElementById(id).textContent = id === 'cd-days' ? '000' : '00';
+    });
+    return;
+  }
+
+  const days  = Math.floor(diff / 864e5);
+  const hours = Math.floor((diff % 864e5) / 36e5);
+  const mins  = Math.floor((diff % 36e5)  / 6e4);
+  const secs  = Math.floor((diff % 6e4)   / 1e3);
+
+  const secEl  = document.getElementById('cd-secs');
+  const newSec = pad(secs);
+  if (secEl.textContent !== newSec) {
+    secEl.classList.remove('flash');
+    void secEl.offsetWidth;
+    secEl.classList.add('flash');
+  }
+
+  document.getElementById('cd-days').textContent  = pad(days, 3);
+  document.getElementById('cd-hours').textContent = pad(hours);
+  document.getElementById('cd-mins').textContent  = pad(mins);
+  secEl.textContent = newSec;
+}
+
+tick();
+setInterval(tick, 1000);
+
+// ── Particle system (rising embers) ───────────────────────────
+(function () {
+  const canvas = document.getElementById('canvas');
+  const ctx    = canvas.getContext('2d');
+  let W, H;
+
+  const COLORS = [
+    [232, 53,  42],   // red
+    [245,201,  24],   // yellow
+    [255,170,  40],   // warm orange
+    [ 31,111, 208],   // blue
+    [ 46,168,  74],   // green
+  ];
+
+  function resize() {
+    W = canvas.width  = window.innerWidth;
+    H = canvas.height = window.innerHeight;
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  class Ember {
+    constructor(scatter) {
+      this.scatter = scatter;
+      this.reset();
+      if (scatter) { this.y = Math.random() * H; this.alpha *= Math.random(); }
+    }
+    reset() {
+      // Spawn in a loose band around horizontal centre
+      this.x     = W * 0.25 + Math.random() * W * 0.5;
+      this.y     = H * 0.72 + Math.random() * H * 0.15;
+      this.vx    = (Math.random() - 0.5) * 0.5;
+      this.vy    = -(0.35 + Math.random() * 1.1);
+      this.r     = 0.6 + Math.random() * 1.8;
+      this.alpha = 0.55 + Math.random() * 0.4;
+      this.decay = 0.003 + Math.random() * 0.005;
+      this.col   = COLORS[Math.floor(Math.random() * COLORS.length)];
+      this.age   = 0;
+    }
+    update() {
+      this.x += this.vx + Math.sin(this.age * 0.04) * 0.25;
+      this.y += this.vy;
+      this.alpha -= this.decay;
+      this.age++;
+      if (this.alpha <= 0 || this.y < -8) this.reset();
+    }
+    draw() {
+      const [r, g, b] = this.col;
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(${r},${g},${b},${this.alpha.toFixed(3)})`;
+      ctx.fill();
+    }
+  }
+
+  const COUNT   = 110;
+  const embers  = Array.from({ length: COUNT }, (_, i) => new Ember(i < COUNT * 0.7));
+
+  function frame() {
+    ctx.clearRect(0, 0, W, H);
+    embers.forEach(e => { e.update(); e.draw(); });
+    requestAnimationFrame(frame);
+  }
+  frame();
+})();
+</script>
+
+</body>
+</html>
