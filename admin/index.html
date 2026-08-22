@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="robots" content="noindex, nofollow" />
+<title>T.O.R.C.H 2026 · 관리자</title>
+<link rel="icon" href="../images/Hero.png" />
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500&family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet" />
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#06060a; --panel:#0c0c14; --line:rgba(237,233,226,0.10); --hair:rgba(237,233,226,0.16);
+  --cream:#ede9e2; --mid:rgba(237,233,226,0.55); --soft:rgba(237,233,226,0.32);
+  --red:#e8352a; --blue:#1f6fd0; --yellow:#f5c918; --green:#2ea84a;
+  --mono:'IBM Plex Mono',monospace; --sans:'Noto Sans KR',system-ui,sans-serif;
+}
+body{background:var(--bg);color:var(--cream);font-family:var(--sans);font-weight:300;line-height:1.6;-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+input,select,textarea,button{font-family:inherit;font-size:inherit}
+
+/* ── Login ── */
+.login{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:2rem}
+.login-card{width:min(400px,100%);border:1px solid var(--line);background:var(--panel);padding:2.6rem 2.2rem;text-align:center}
+.login-card img{width:64px;margin:0 auto 1.4rem}
+.login-card h1{font-size:1.05rem;font-weight:700;letter-spacing:0.06em}
+.login-card p{font-family:var(--mono);font-size:0.58rem;letter-spacing:0.26em;text-transform:uppercase;color:var(--soft);margin-top:0.5rem}
+.login-card form{margin-top:2rem;display:flex;flex-direction:column;gap:0.9rem}
+.err-msg{color:var(--red);font-size:0.82rem;min-height:1.2em}
+
+input[type=text],input[type=password],input[type=number],select,textarea{
+  width:100%;background:rgba(6,6,10,0.7);color:var(--cream);border:1px solid var(--line);
+  border-radius:2px;padding:0.75rem 0.9rem;font-weight:300;transition:border-color .25s
+}
+textarea{resize:vertical;min-height:76px}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--hair)}
+select option{background:#0c0c14}
+
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:0.4rem;padding:0.72rem 1.3rem;
+  font-family:var(--mono);font-size:0.66rem;letter-spacing:0.16em;text-transform:uppercase;
+  background:var(--cream);color:var(--bg);border:1px solid var(--cream);border-radius:2px;cursor:pointer;transition:.25s}
+.btn:hover{opacity:.86}
+.btn-ghost{background:transparent;color:var(--cream);border-color:var(--line)}
+.btn-ghost:hover{border-color:var(--hair);opacity:1}
+.btn-sm{padding:0.45rem 0.8rem;font-size:0.58rem}
+.btn-danger{background:transparent;border-color:rgba(232,53,42,0.45);color:var(--red)}
+
+/* ── Shell ── */
+.shell{display:none}
+.shell.on{display:block}
+.top{position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:1rem;padding:0.9rem clamp(1rem,3vw,2rem);
+  border-bottom:1px solid var(--line);background:rgba(6,6,10,0.92);backdrop-filter:blur(12px)}
+.top img{width:26px}
+.top h1{font-size:0.86rem;font-weight:700;letter-spacing:0.1em;margin-right:auto}
+.top h1 em{font-family:var(--mono);font-style:normal;font-size:0.56rem;letter-spacing:0.2em;color:var(--soft);margin-left:0.6rem}
+
+.tabs{display:flex;gap:0;border-bottom:1px solid var(--line);padding:0 clamp(1rem,3vw,2rem);overflow-x:auto}
+.tab{padding:0.9rem 1.1rem;font-family:var(--mono);font-size:0.64rem;letter-spacing:0.16em;text-transform:uppercase;
+  color:var(--soft);background:none;border:0;border-bottom:2px solid transparent;cursor:pointer;white-space:nowrap}
+.tab.on{color:var(--cream);border-bottom-color:var(--red)}
+
+main{padding:clamp(1.2rem,3vw,2.2rem) clamp(1rem,3vw,2rem) 5rem}
+.page{display:none}
+.page.on{display:block}
+
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:1px;background:var(--line);border:1px solid var(--line);margin-bottom:1.6rem}
+.stat{background:var(--panel);padding:1.2rem}
+.stat b{display:block;font-family:var(--mono);font-size:1.5rem;font-weight:400}
+.stat span{font-family:var(--mono);font-size:0.54rem;letter-spacing:0.22em;text-transform:uppercase;color:var(--soft)}
+.stat.paid b{color:var(--green)} .stat.pending b{color:var(--yellow)} .stat.cancelled b{color:var(--red)}
+
+.toolbar{display:flex;gap:0.6rem;flex-wrap:wrap;align-items:center;margin-bottom:1.2rem}
+.toolbar input[type=text]{max-width:240px}
+.toolbar select{max-width:150px}
+.toolbar .spacer{margin-left:auto}
+
+.table-wrap{overflow-x:auto;border:1px solid var(--line)}
+table{width:100%;border-collapse:collapse;min-width:940px;font-size:0.86rem}
+th{font-family:var(--mono);font-size:0.56rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--soft);
+  text-align:left;padding:0.85rem 0.8rem;background:var(--panel);border-bottom:1px solid var(--line);white-space:nowrap}
+td{padding:0.8rem;border-bottom:1px solid var(--line);vertical-align:middle}
+tr:hover td{background:rgba(237,233,226,0.02)}
+td.num{font-family:var(--mono);font-size:0.78rem;color:var(--soft)}
+td .sub{display:block;font-size:0.74rem;color:var(--soft)}
+.pill{display:inline-block;font-family:var(--mono);font-size:0.56rem;letter-spacing:0.14em;text-transform:uppercase;
+  padding:0.25rem 0.6rem;border-radius:100px;border:1px solid currentColor}
+.pill.pending{color:var(--yellow)} .pill.paid{color:var(--green)} .pill.cancelled{color:var(--red)}
+.row-actions{display:flex;gap:0.35rem;flex-wrap:wrap}
+.empty{padding:3rem 1rem;text-align:center;color:var(--soft);font-size:0.9rem}
+
+.card{border:1px solid var(--line);background:var(--panel);padding:clamp(1.2rem,3vw,2rem);margin-bottom:1.4rem}
+.card h2{font-size:1rem;font-weight:700;margin-bottom:0.4rem}
+.card .hint{font-size:0.82rem;color:var(--soft);margin-bottom:1.4rem}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1rem 1.4rem}
+.f{display:flex;flex-direction:column;gap:0.45rem}
+.f label{font-family:var(--mono);font-size:0.56rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--soft)}
+.switch{display:flex;align-items:center;gap:0.6rem;font-size:0.9rem;cursor:pointer}
+.switch input{width:16px;height:16px;accent-color:var(--green);cursor:pointer}
+
+.poster-row{display:grid;grid-template-columns:220px 1fr;gap:1.6rem;align-items:start}
+@media(max-width:640px){.poster-row{grid-template-columns:1fr}}
+.poster-prev{border:1px solid var(--line);padding:0.5rem;background:rgba(6,6,10,0.5)}
+.poster-prev img{width:100%;display:block}
+.drop{display:block;border:1px dashed var(--hair);padding:2rem 1.2rem;text-align:center;color:var(--soft);font-size:0.86rem;
+  border-radius:3px;cursor:pointer;transition:.25s}
+.drop:hover,.drop.over{border-color:var(--cream);color:var(--cream);background:rgba(237,233,226,0.02)}
+.drop input{display:none}
+
+.msg{font-size:0.84rem;margin-top:0.9rem;min-height:1.2em}
+.msg.ok{color:var(--green)} .msg.bad{color:var(--red)}
+
+.toast{position:fixed;bottom:1.6rem;left:50%;transform:translate(-50%,16px);z-index:60;
+  padding:0.7rem 1.3rem;background:var(--cream);color:var(--bg);font-family:var(--mono);font-size:0.64rem;
+  letter-spacing:0.12em;text-transform:uppercase;border-radius:2px;opacity:0;pointer-events:none;transition:.25s}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+</style>
+</head>
+<body>
+
+<!-- ── LOGIN ── -->
+<section class="login" id="loginView">
+  <div class="login-card">
+    <img src="../images/Hero.png" alt="" />
+    <h1>T.O.R.C.H 2026 관리자</h1>
+    <p>Symposium Admin</p>
+    <form id="loginForm">
+      <input type="password" id="pw" placeholder="관리자 비밀번호" autocomplete="current-password" required />
+      <button class="btn" type="submit" id="loginBtn">로그인</button>
+      <p class="err-msg" id="loginErr"></p>
+    </form>
+  </div>
+</section>
+
+<!-- ── DASHBOARD ── -->
+<div class="shell" id="shell">
+  <header class="top">
+    <img src="../images/Hero.png" alt="" />
+    <h1>T.O.R.C.H 2026<em>ADMIN</em></h1>
+    <a class="btn btn-ghost btn-sm" href="/" target="_blank">사이트 보기</a>
+    <button class="btn btn-ghost btn-sm" id="logoutBtn">로그아웃</button>
+  </header>
+
+  <nav class="tabs">
+    <button class="tab on" data-page="regs">참가신청</button>
+    <button class="tab" data-page="poster">포스터</button>
+    <button class="tab" data-page="settings">설정</button>
+  </nav>
+
+  <main>
+    <!-- 참가신청 -->
+    <section class="page on" id="page-regs">
+      <div class="stats">
+        <div class="stat"><b id="stTotal">0</b><span>전체 신청</span></div>
+        <div class="stat pending"><b id="stPending">0</b><span>입금 대기</span></div>
+        <div class="stat paid"><b id="stPaid">0</b><span>입금 완료</span></div>
+        <div class="stat cancelled"><b id="stCancelled">0</b><span>취소</span></div>
+        <div class="stat"><b id="stRevenue">0</b><span>입금액 합계 (원)</span></div>
+      </div>
+
+      <div class="toolbar">
+        <input type="text" id="q" placeholder="이름 · 연락처 · 소속 검색" />
+        <select id="statusFilter">
+          <option value="">전체 상태</option>
+          <option value="pending">입금 대기</option>
+          <option value="paid">입금 완료</option>
+          <option value="cancelled">취소</option>
+        </select>
+        <button class="btn btn-ghost btn-sm" id="reloadBtn">새로고침</button>
+        <span class="spacer"></span>
+        <button class="btn btn-sm" id="csvBtn">CSV 내보내기</button>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>#</th><th>성함</th><th>연락처</th><th>소속 / 직군</th>
+              <th>입금자명</th><th>금액</th><th>상태</th><th>메모</th><th>신청일시</th><th></th>
+            </tr>
+          </thead>
+          <tbody id="rows"></tbody>
+        </table>
+        <div class="empty" id="emptyRow" hidden>신청 내역이 없습니다.</div>
+      </div>
+    </section>
+
+    <!-- 포스터 -->
+    <section class="page" id="page-poster">
+      <div class="card">
+        <h2>포스터 업로드</h2>
+        <p class="hint">업로드하면 사이트 「오시는 길」 섹션의 포스터가 즉시 교체됩니다. PNG · JPG · WEBP, 최대 10MB.</p>
+        <div class="poster-row">
+          <div class="poster-prev"><img id="posterPrev" src="/api/poster" alt="현재 포스터" /></div>
+          <div>
+            <label class="drop" id="drop">
+              <input type="file" id="posterFile" accept="image/png,image/jpeg,image/webp" />
+              여기를 클릭하거나 파일을 끌어다 놓으세요
+            </label>
+            <div style="display:flex;gap:0.6rem;margin-top:1rem;flex-wrap:wrap">
+              <button class="btn btn-sm" id="uploadBtn" disabled>업로드</button>
+              <button class="btn btn-ghost btn-sm btn-danger" id="posterDelBtn">업로드 포스터 삭제</button>
+            </div>
+            <p class="msg" id="posterMsg"></p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 설정 -->
+    <section class="page" id="page-settings">
+      <div class="card">
+        <h2>등록 설정</h2>
+        <p class="hint">온라인 신청 접수 여부와 정원, 참가비를 관리합니다.</p>
+        <div class="grid2">
+          <div class="f">
+            <label>온라인 신청 접수</label>
+            <label class="switch"><input type="checkbox" id="setRegOpen" /> <span>접수 받기</span></label>
+          </div>
+          <div class="f">
+            <label>정원 (0 = 제한 없음)</label>
+            <input type="number" id="setCapacity" min="0" />
+          </div>
+          <div class="f">
+            <label>사전 등록비 (원)</label>
+            <input type="number" id="setEarly" min="0" />
+          </div>
+          <div class="f">
+            <label>현장 등록비 (원)</label>
+            <input type="number" id="setOnsite" min="0" />
+          </div>
+          <div class="f" style="grid-column:1/-1">
+            <label>사이트 상단 공지 (비우면 미표시)</label>
+            <textarea id="setNotice" maxlength="300" placeholder="예) 사전등록이 11월 30일 마감됩니다."></textarea>
+          </div>
+        </div>
+        <div style="margin-top:1.4rem">
+          <button class="btn btn-sm" id="saveSettings">저장</button>
+          <p class="msg" id="setMsg"></p>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+(function () {
+  'use strict';
+  const $  = (s, r = document) => r.querySelector(s);
+  const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
+  const TOKEN_KEY = 'torchconf_admin_token';
+
+  let token = localStorage.getItem(TOKEN_KEY) || '';
+  let rows = [];
+
+  const toast = $('#toast');
+  let tTimer;
+  function say(msg) {
+    toast.textContent = msg; toast.classList.add('show');
+    clearTimeout(tTimer); tTimer = setTimeout(() => toast.classList.remove('show'), 2000);
+  }
+
+  async function api(path, opts = {}) {
+    const headers = Object.assign({}, opts.headers || {});
+    if (token) headers.Authorization = 'Bearer ' + token;
+    if (opts.body && !(opts.body instanceof FormData)) headers['Content-Type'] = 'application/json';
+    const res = await fetch('/api' + path, Object.assign({ credentials: 'same-origin' }, opts, { headers }));
+    if (res.status === 401) { logout(); throw new Error('세션이 만료되었습니다'); }
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok || data.ok === false) throw new Error(data.error || '요청에 실패했습니다');
+    return data;
+  }
+
+  /* ── 로그인 ── */
+  $('#loginForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const btn = $('#loginBtn'), err = $('#loginErr');
+    err.textContent = ''; btn.disabled = true;
+    try {
+      const data = await api('/admin/login', { method: 'POST', body: JSON.stringify({ password: $('#pw').value }) });
+      token = data.token;
+      localStorage.setItem(TOKEN_KEY, token);
+      enter();
+    } catch (e2) {
+      err.textContent = e2.message;
+    } finally { btn.disabled = false; }
+  });
+
+  function logout() {
+    token = '';
+    localStorage.removeItem(TOKEN_KEY);
+    fetch('/api/admin/logout', { method: 'POST', credentials: 'same-origin' }).catch(() => {});
+    $('#shell').classList.remove('on');
+    $('#loginView').style.display = 'flex';
+  }
+  $('#logoutBtn').addEventListener('click', logout);
+
+  async function enter() {
+    $('#loginView').style.display = 'none';
+    $('#shell').classList.add('on');
+    await Promise.all([loadRegs(), loadSettings()]);
+  }
+
+  /* ── 탭 ── */
+  $$('.tab').forEach(t => t.addEventListener('click', () => {
+    $$('.tab').forEach(x => x.classList.toggle('on', x === t));
+    $$('.page').forEach(p => p.classList.toggle('on', p.id === 'page-' + t.dataset.page));
+  }));
+
+  /* ── 참가신청 ── */
+  const esc = (s) => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  const STATUS_KO = { pending: '입금대기', paid: '입금완료', cancelled: '취소' };
+
+  async function loadRegs() {
+    const params = new URLSearchParams();
+    if ($('#statusFilter').value) params.set('status', $('#statusFilter').value);
+    if ($('#q').value.trim()) params.set('q', $('#q').value.trim());
+    const data = await api('/admin/registrations?' + params.toString());
+    rows = data.rows || [];
+    render(data.stats);
+  }
+
+  function render(stats) {
+    $('#stTotal').textContent     = stats.total;
+    $('#stPending').textContent   = stats.pending || 0;
+    $('#stPaid').textContent      = stats.paid || 0;
+    $('#stCancelled').textContent = stats.cancelled || 0;
+    $('#stRevenue').textContent   = (stats.revenue || 0).toLocaleString('ko-KR');
+
+    $('#emptyRow').hidden = rows.length > 0;
+    $('#rows').innerHTML = rows.map(r => `
+      <tr data-id="${r.id}">
+        <td class="num">${r.id}</td>
+        <td><b>${esc(r.name)}</b>${r.memo ? `<span class="sub">${esc(r.memo)}</span>` : ''}</td>
+        <td class="num">${esc(r.phone)}${r.email ? `<span class="sub">${esc(r.email)}</span>` : ''}</td>
+        <td>${esc(r.affiliation || '-')}<span class="sub">${esc(r.job || '')}</span></td>
+        <td>${esc(r.depositor || r.name)}</td>
+        <td class="num">${(r.amount || 0).toLocaleString('ko-KR')}</td>
+        <td><span class="pill ${r.status}">${STATUS_KO[r.status] || r.status}</span></td>
+        <td><input type="text" class="memo" value="${esc(r.admin_memo || '')}" placeholder="관리자 메모" style="min-width:130px" /></td>
+        <td class="num">${esc((r.created_at || '').replace('T', ' ').slice(0, 16))}</td>
+        <td>
+          <div class="row-actions">
+            ${r.status !== 'paid' ? '<button class="btn btn-ghost btn-sm act" data-act="paid">입금확인</button>' : ''}
+            ${r.status !== 'pending' ? '<button class="btn btn-ghost btn-sm act" data-act="pending">대기로</button>' : ''}
+            ${r.status !== 'cancelled' ? '<button class="btn btn-ghost btn-sm act" data-act="cancelled">취소</button>' : ''}
+            <button class="btn btn-ghost btn-sm btn-danger act" data-act="delete">삭제</button>
+          </div>
+        </td>
+      </tr>`).join('');
+  }
+
+  $('#rows').addEventListener('click', async (e) => {
+    const btn = e.target.closest('.act');
+    if (!btn) return;
+    const tr = btn.closest('tr');
+    const id = tr.dataset.id;
+    const act = btn.dataset.act;
+
+    try {
+      if (act === 'delete') {
+        if (!confirm(`#${id} 신청 내역을 완전히 삭제할까요? 되돌릴 수 없습니다.`)) return;
+        await api('/admin/registrations/' + id, { method: 'DELETE' });
+        say('삭제되었습니다');
+      } else {
+        await api('/admin/registrations/' + id, { method: 'PATCH', body: JSON.stringify({ status: act }) });
+        say('상태를 변경했습니다');
+      }
+      await loadRegs();
+    } catch (err) { alert(err.message); }
+  });
+
+  // 관리자 메모: 포커스 아웃 시 저장
+  $('#rows').addEventListener('focusout', async (e) => {
+    if (!e.target.classList.contains('memo')) return;
+    const tr = e.target.closest('tr');
+    const id = Number(tr.dataset.id);
+    const row = rows.find(r => r.id === id);
+    if (!row || (row.admin_memo || '') === e.target.value) return;
+    try {
+      await api('/admin/registrations/' + id, { method: 'PATCH', body: JSON.stringify({ admin_memo: e.target.value }) });
+      row.admin_memo = e.target.value;
+      say('메모를 저장했습니다');
+    } catch (err) { alert(err.message); }
+  });
+
+  let qTimer;
+  $('#q').addEventListener('input', () => { clearTimeout(qTimer); qTimer = setTimeout(() => loadRegs().catch(() => {}), 300); });
+  $('#statusFilter').addEventListener('change', () => loadRegs().catch(() => {}));
+  $('#reloadBtn').addEventListener('click', () => loadRegs().then(() => say('새로고침 완료')).catch(e => alert(e.message)));
+
+  $('#csvBtn').addEventListener('click', async () => {
+    const params = new URLSearchParams({ format: 'csv' });
+    if ($('#statusFilter').value) params.set('status', $('#statusFilter').value);
+    if ($('#q').value.trim()) params.set('q', $('#q').value.trim());
+    const res = await fetch('/api/admin/registrations?' + params.toString(), {
+      headers: { Authorization: 'Bearer ' + token }, credentials: 'same-origin'
+    });
+    if (!res.ok) return alert('CSV 내보내기에 실패했습니다');
+    const blob = await res.blob();
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = `torch2026_registrations_${new Date().toISOString().slice(0, 10)}.csv`;
+    document.body.appendChild(a); a.click();
+    setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 1000);
+  });
+
+  /* ── 포스터 ── */
+  const fileInput = $('#posterFile'), drop = $('#drop'), upBtn = $('#uploadBtn'), pMsg = $('#posterMsg');
+
+  function setFile(file) {
+    if (!file) return;
+    fileInput._file = file;
+    drop.textContent = `${file.name} (${(file.size / 1024 / 1024).toFixed(1)}MB)`;
+    upBtn.disabled = false;
+  }
+  fileInput.addEventListener('change', () => setFile(fileInput.files[0]));
+  ['dragenter', 'dragover'].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.add('over'); }));
+  ['dragleave', 'drop'].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.remove('over'); }));
+  drop.addEventListener('drop', e => setFile(e.dataTransfer.files[0]));
+
+  upBtn.addEventListener('click', async () => {
+    const file = fileInput._file || fileInput.files[0];
+    if (!file) return;
+    pMsg.className = 'msg'; pMsg.textContent = '업로드 중…';
+    upBtn.disabled = true;
+    try {
+      const fd = new FormData();
+      fd.append('file', file);
+      await api('/admin/poster', { method: 'POST', body: fd });
+      pMsg.className = 'msg ok'; pMsg.textContent = '포스터가 교체되었습니다.';
+      $('#posterPrev').src = '/api/poster?v=' + Date.now();
+      drop.textContent = '여기를 클릭하거나 파일을 끌어다 놓으세요';
+      fileInput.value = ''; fileInput._file = null;
+      say('포스터 업로드 완료');
+    } catch (e) {
+      pMsg.className = 'msg bad'; pMsg.textContent = e.message;
+    } finally { upBtn.disabled = false; }
+  });
+
+  $('#posterDelBtn').addEventListener('click', async () => {
+    if (!confirm('업로드한 포스터를 삭제하고 기본 이미지로 되돌릴까요?')) return;
+    try {
+      await api('/admin/poster', { method: 'DELETE' });
+      $('#posterPrev').src = '/api/poster?v=' + Date.now();
+      pMsg.className = 'msg ok'; pMsg.textContent = '기본 포스터로 되돌렸습니다.';
+      say('삭제되었습니다');
+    } catch (e) { pMsg.className = 'msg bad'; pMsg.textContent = e.message; }
+  });
+
+  /* ── 설정 ── */
+  async function loadSettings() {
+    const { settings } = await api('/admin/settings');
+    $('#setRegOpen').checked  = settings.reg_open === '1';
+    $('#setCapacity').value   = settings.capacity || 0;
+    $('#setEarly').value      = settings.early_fee || 60000;
+    $('#setOnsite').value     = settings.onsite_fee || 80000;
+    $('#setNotice').value     = settings.notice || '';
+  }
+
+  $('#saveSettings').addEventListener('click', async () => {
+    const msg = $('#setMsg');
+    msg.className = 'msg'; msg.textContent = '저장 중…';
+    try {
+      await api('/admin/settings', {
+        method: 'PUT',
+        body: JSON.stringify({
+          reg_open:   $('#setRegOpen').checked,
+          capacity:   $('#setCapacity').value || 0,
+          early_fee:  $('#setEarly').value || 60000,
+          onsite_fee: $('#setOnsite').value || 80000,
+          notice:     $('#setNotice').value
+        })
+      });
+      msg.className = 'msg ok'; msg.textContent = '저장되었습니다.';
+      say('설정 저장 완료');
+    } catch (e) { msg.className = 'msg bad'; msg.textContent = e.message; }
+  });
+
+  /* ── 세션 복구 ── */
+  (async function init() {
+    if (!token) return;
+    try { await api('/admin/me'); enter(); } catch { /* 로그인 화면 유지 */ }
+  })();
+})();
+</script>
+</body>
+</html>

@@ -1,433 +1,457 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>T.O.R.C.H — 12.13.2026</title>
-  <meta name="description" content="Something is igniting. 12.13.2026" />
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>T.O.R.C.H 2026 Symposium — 2026.12.13</title>
+<meta name="description" content="T.O.R.C.H 2026 Symposium · 2026년 12월 13일(일) 10:00~17:00 · 서울시 중구 청파로 450 신흥빌딩 11층. Technology · Opportunity · Redeem · Challenge." />
+<meta property="og:title" content="T.O.R.C.H 2026 Symposium" />
+<meta property="og:description" content="2026.12.13 SUN 10:00~17:00 · 신흥빌딩 11층 · 4인의 연자, 하나의 불빛." />
+<meta property="og:image" content="images/poster.png" />
+<meta property="og:type" content="website" />
+<link rel="icon" href="images/Hero.png" />
 
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=IBM+Plex+Mono:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet" />
-
-  <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-    :root {
-      --red:    #e8352a;
-      --blue:   #1f6fd0;
-      --yellow: #f5c918;
-      --green:  #2ea84a;
-      --cream:  #ede9e2;
-      --bg:     #06060a;
-      --mid:    rgba(237,233,226,0.45);
-      --faint:  rgba(237,233,226,0.18);
-      --ghost:  rgba(237,233,226,0.07);
-    }
-
-    html, body {
-      width: 100%; height: 100%;
-      background: var(--bg);
-      color: var(--cream);
-      overflow-x: hidden;
-      -webkit-font-smoothing: antialiased;
-    }
-
-    /* ── Grain overlay ──────────────────────────────── */
-    body::after {
-      content: '';
-      position: fixed; inset: 0;
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
-      opacity: 0.028;
-      pointer-events: none;
-      z-index: 999;
-    }
-
-    /* ── Radial bg glow ─────────────────────────────── */
-    body::before {
-      content: '';
-      position: fixed; inset: 0;
-      background: radial-gradient(ellipse 60% 55% at 50% 42%, rgba(31,111,208,0.07) 0%, transparent 70%),
-                  radial-gradient(ellipse 40% 35% at 50% 42%, rgba(232,53,42,0.05) 0%, transparent 60%);
-      pointer-events: none;
-      z-index: 0;
-    }
-
-    /* ── Canvas ─────────────────────────────────────── */
-    #canvas {
-      position: fixed; inset: 0;
-      width: 100%; height: 100%;
-      pointer-events: none;
-      z-index: 1;
-    }
-
-    /* ── Layout ─────────────────────────────────────── */
-    .site {
-      position: relative; z-index: 2;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      padding: 6rem 2rem 5rem;
-      gap: 0;
-    }
-
-    /* ── Top label ──────────────────────────────────── */
-    .transmission {
-      position: fixed;
-      top: 2.2rem; left: 50%;
-      transform: translateX(-50%);
-      font-family: 'IBM Plex Mono', monospace;
-      font-size: 0.55rem;
-      font-weight: 300;
-      letter-spacing: 0.45em;
-      color: rgba(237,233,226,0.18);
-      white-space: nowrap;
-      text-transform: uppercase;
-      animation: fadeIn 2s ease 0.5s both;
-    }
-
-    /* ── Corner coords ──────────────────────────────── */
-    .corner {
-      position: fixed;
-      font-family: 'IBM Plex Mono', monospace;
-      font-size: 0.5rem;
-      font-weight: 300;
-      letter-spacing: 0.2em;
-      color: rgba(237,233,226,0.1);
-      line-height: 1.8;
-      animation: fadeIn 2s ease 1.5s both;
-    }
-    .corner-tl { top: 1.8rem; left: 2rem; }
-    .corner-tr { top: 1.8rem; right: 2rem; text-align: right; }
-    .corner-bl { bottom: 1.8rem; left: 2rem; }
-    .corner-br { bottom: 1.8rem; right: 2rem; text-align: right; }
-    @media (max-width: 600px) { .corner { display: none; } }
-
-    /* ── Logo ───────────────────────────────────────── */
-    .logo-wrap {
-      position: relative;
-      width: clamp(160px, 26vw, 260px);
-      aspect-ratio: 1;
-      margin-bottom: 3.5rem;
-      animation: riseIn 1.4s cubic-bezier(0.22,1,0.36,1) 0.2s both;
-    }
-
-    .logo-wrap img {
-      width: 100%; height: 100%;
-      object-fit: contain;
-      animation: breathe 5s ease-in-out infinite;
-    }
-
-    @keyframes breathe {
-      0%,100% {
-        filter:
-          drop-shadow(0 0 18px rgba(232,53,42,0.22))
-          drop-shadow(0 0 50px rgba(31,111,208,0.12))
-          drop-shadow(0 0 90px rgba(245,201,24,0.05));
-      }
-      50% {
-        filter:
-          drop-shadow(0 0 32px rgba(232,53,42,0.40))
-          drop-shadow(0 0 80px rgba(31,111,208,0.22))
-          drop-shadow(0 0 140px rgba(245,201,24,0.10))
-          drop-shadow(0 0 200px rgba(46,168,74,0.06));
-      }
-    }
-
-    /* ── Headline ───────────────────────────────────── */
-    .headline {
-      text-align: center;
-      margin-bottom: 3.8rem;
-      animation: riseIn 1.4s cubic-bezier(0.22,1,0.36,1) 0.5s both;
-    }
-
-    .headline h1 {
-      font-family: 'Cinzel', serif;
-      font-weight: 900;
-      font-size: clamp(1.35rem, 4.2vw, 2.9rem);
-      letter-spacing: 0.18em;
-      color: var(--cream);
-      line-height: 1.25;
-      margin-bottom: 1.1rem;
-    }
-
-    .headline p {
-      font-family: 'IBM Plex Mono', monospace;
-      font-weight: 300;
-      font-style: italic;
-      font-size: clamp(0.65rem, 1.4vw, 0.8rem);
-      letter-spacing: 0.38em;
-      color: var(--mid);
-      text-transform: uppercase;
-    }
-
-    /* ── Countdown ──────────────────────────────────── */
-    .countdown-wrap {
-      display: flex;
-      align-items: flex-start;
-      gap: clamp(1.2rem, 3.5vw, 3rem);
-      margin-bottom: 1.8rem;
-      animation: riseIn 1.4s cubic-bezier(0.22,1,0.36,1) 0.8s both;
-    }
-
-    .cd-unit {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 0.6rem;
-    }
-
-    .cd-num {
-      font-family: 'IBM Plex Mono', monospace;
-      font-weight: 400;
-      font-size: clamp(2.8rem, 9vw, 6rem);
-      line-height: 1;
-      color: var(--cream);
-      min-width: 2ch;
-      text-align: center;
-      position: relative;
-    }
-
-    /* Underline rule */
-    .cd-num::after {
-      content: '';
-      position: absolute;
-      bottom: -3px; left: 0; right: 0;
-      height: 1px;
-      background: linear-gradient(90deg, transparent, var(--faint), transparent);
-    }
-
-    .cd-label {
-      font-family: 'IBM Plex Mono', monospace;
-      font-weight: 300;
-      font-size: 0.52rem;
-      letter-spacing: 0.38em;
-      color: rgba(237,233,226,0.22);
-      text-transform: uppercase;
-    }
-
-    .cd-sep {
-      font-family: 'IBM Plex Mono', monospace;
-      font-size: clamp(2rem, 6vw, 4.2rem);
-      color: rgba(237,233,226,0.08);
-      line-height: 1;
-      margin-top: 0.05em;
-      user-select: none;
-    }
-
-    /* Tick flash */
-    @keyframes tick {
-      0%   { opacity: 1; }
-      12%  { opacity: 0.4; }
-      25%  { opacity: 1; }
-    }
-    .flash { animation: tick 0.25s ease; }
-
-    /* ── Date tag ───────────────────────────────────── */
-    .date-tag {
-      font-family: 'IBM Plex Mono', monospace;
-      font-size: 0.6rem;
-      letter-spacing: 0.5em;
-      color: rgba(237,233,226,0.15);
-      margin-bottom: 3.5rem;
-      text-transform: uppercase;
-      animation: riseIn 1.4s cubic-bezier(0.22,1,0.36,1) 1s both;
-    }
-
-
-    /* ── Bottom signal bar ──────────────────────────── */
-    .signal-bar {
-      position: fixed;
-      bottom: 0; left: 0; right: 0;
-      height: 2px;
-      background: linear-gradient(90deg,
-        var(--red), var(--blue), var(--yellow), var(--green), var(--blue), var(--red)
-      );
-      background-size: 400% 100%;
-      animation: signalFlow 10s linear infinite;
-      opacity: 0.5;
-      z-index: 10;
-    }
-    @keyframes signalFlow {
-      0%   { background-position: 0% 0%; }
-      100% { background-position: 400% 0%; }
-    }
-
-    /* ── Shared animations ──────────────────────────── */
-    @keyframes fadeIn {
-      from { opacity: 0; }
-      to   { opacity: 1; }
-    }
-    @keyframes riseIn {
-      from { opacity: 0; transform: translateY(22px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-
-    /* ── Responsive ─────────────────────────────────── */
-    @media (max-width: 480px) {
-      .countdown-wrap { gap: 0.9rem; }
-      .cd-sep { font-size: 1.8rem; }
-      .headline h1 { letter-spacing: 0.1em; }
-    }
-  </style>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=IBM+Plex+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
 
-<canvas id="canvas"></canvas>
-
-<div class="transmission">TRANSMISSION INCOMING &nbsp;//&nbsp; STAND BY</div>
-
-<div class="corner corner-tl">37°33'N<br>127°0'E</div>
-<div class="corner corner-tr">SIG-001<br>CLASSIFIED</div>
-<div class="corner corner-bl">FREQ&nbsp;·&nbsp;UNKNOWN</div>
-<div class="corner corner-br">ORIGIN&nbsp;·&nbsp;——</div>
-
-<main class="site">
-
-  <div class="logo-wrap">
-    <img src="images/Hero.png" alt="T.O.R.C.H" />
-  </div>
-
-  <div class="headline">
-    <h1>NOT ALL LIGHT<br>CAN BE SEEN.</h1>
-    <p>Something is igniting.</p>
-  </div>
-
-  <div class="countdown-wrap" id="countdown">
-    <div class="cd-unit">
-      <div class="cd-num" id="cd-days">000</div>
-      <div class="cd-label">Days</div>
-    </div>
-    <div class="cd-sep">:</div>
-    <div class="cd-unit">
-      <div class="cd-num" id="cd-hours">00</div>
-      <div class="cd-label">Hours</div>
-    </div>
-    <div class="cd-sep">:</div>
-    <div class="cd-unit">
-      <div class="cd-num" id="cd-mins">00</div>
-      <div class="cd-label">Minutes</div>
-    </div>
-    <div class="cd-sep">:</div>
-    <div class="cd-unit">
-      <div class="cd-num" id="cd-secs">00</div>
-      <div class="cd-label">Seconds</div>
-    </div>
-  </div>
-
-  <div class="date-tag">12 · 13 · 2026</div>
-
-</main>
-
+<canvas id="embers"></canvas>
 <div class="signal-bar"></div>
 
-<script>
-// ── Countdown ──────────────────────────────────────────────────
-const TARGET = new Date('2026-12-13T00:00:00');
+<div class="notice-bar" id="noticeBar" hidden><span></span></div>
 
-function pad(n, w = 2) { return String(n).padStart(w, '0'); }
+<!-- ══ NAV ══════════════════════════════════════════ -->
+<header class="nav" id="nav">
+  <a class="nav-brand" href="#top">
+    <img src="images/Hero.png" alt="" />
+    <span>T.O.R.C.H<em>2026</em></span>
+  </a>
+  <nav class="nav-links">
+    <a href="#about">개요</a>
+    <a href="#speakers">연자</a>
+    <a href="#program">프로그램</a>
+    <a href="#register">참가신청</a>
+    <a href="#venue">오시는 길</a>
+  </nav>
+  <a class="btn btn-sm" href="#register">참가신청</a>
+  <button class="nav-toggle" id="navToggle" aria-label="메뉴 열기"><span></span><span></span></button>
+</header>
 
-function tick() {
-  const now  = new Date();
-  const diff = TARGET - now;
+<!-- ══ HERO ═════════════════════════════════════════ -->
+<main id="top">
+<section class="hero">
+  <div class="hero-glow"></div>
 
-  if (diff <= 0) {
-    ['cd-days','cd-hours','cd-mins','cd-secs'].forEach(id => {
-      document.getElementById(id).textContent = id === 'cd-days' ? '000' : '00';
-    });
-    return;
-  }
+  <div class="hero-inner">
+    <div class="hero-logo"><img src="images/Hero.png" alt="T.O.R.C.H" /></div>
 
-  const days  = Math.floor(diff / 864e5);
-  const hours = Math.floor((diff % 864e5) / 36e5);
-  const mins  = Math.floor((diff % 36e5)  / 6e4);
-  const secs  = Math.floor((diff % 6e4)   / 1e3);
+    <p class="hero-kicker">Technology &nbsp;·&nbsp; Opportunity &nbsp;·&nbsp; Redeem &nbsp;·&nbsp; Challenge</p>
+    <h1 class="hero-title">T.O.R.C.H<br /><span>2026 Symposium</span></h1>
 
-  const secEl  = document.getElementById('cd-secs');
-  const newSec = pad(secs);
-  if (secEl.textContent !== newSec) {
-    secEl.classList.remove('flash');
-    void secEl.offsetWidth;
-    secEl.classList.add('flash');
-  }
+    <div class="hero-meta">
+      <div><span class="hm-label">DATE</span><span class="hm-value">2026.12.13 <em>SUN</em></span></div>
+      <div class="hm-div"></div>
+      <div><span class="hm-label">TIME</span><span class="hm-value">10:00 — 17:00</span></div>
+      <div class="hm-div"></div>
+      <div><span class="hm-label">VENUE</span><span class="hm-value">신흥빌딩 11층</span></div>
+    </div>
 
-  document.getElementById('cd-days').textContent  = pad(days, 3);
-  document.getElementById('cd-hours').textContent = pad(hours);
-  document.getElementById('cd-mins').textContent  = pad(mins);
-  secEl.textContent = newSec;
-}
+    <div class="countdown" id="countdown">
+      <div class="cd-unit"><span class="cd-num" id="cd-days">000</span><span class="cd-label">Days</span></div>
+      <span class="cd-sep">:</span>
+      <div class="cd-unit"><span class="cd-num" id="cd-hours">00</span><span class="cd-label">Hours</span></div>
+      <span class="cd-sep">:</span>
+      <div class="cd-unit"><span class="cd-num" id="cd-mins">00</span><span class="cd-label">Minutes</span></div>
+      <span class="cd-sep">:</span>
+      <div class="cd-unit"><span class="cd-num" id="cd-secs">00</span><span class="cd-label">Seconds</span></div>
+    </div>
 
-tick();
-setInterval(tick, 1000);
+    <div class="hero-cta">
+      <a class="btn" href="#register">참가신청 하기</a>
+      <a class="btn btn-ghost" href="#program">프로그램 보기</a>
+    </div>
+  </div>
 
-// ── Particle system (rising embers) ───────────────────────────
-(function () {
-  const canvas = document.getElementById('canvas');
-  const ctx    = canvas.getContext('2d');
-  let W, H;
+  <a class="scroll-cue" href="#about"><span></span>SCROLL</a>
+</section>
 
-  const COLORS = [
-    [232, 53,  42],   // red
-    [245,201,  24],   // yellow
-    [255,170,  40],   // warm orange
-    [ 31,111, 208],   // blue
-    [ 46,168,  74],   // green
-  ];
+<!-- ══ ABOUT / ACRONYM ══════════════════════════════ -->
+<section class="section" id="about">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="sec-num">01</span>
+      <h2>불을 옮기는 사람들</h2>
+      <p class="sec-sub">About the symposium</p>
+    </div>
 
-  function resize() {
-    W = canvas.width  = window.innerWidth;
-    H = canvas.height = window.innerHeight;
-  }
-  resize();
-  window.addEventListener('resize', resize);
+    <p class="lead reveal">
+      우리는 기술을 늘리기 위해<br />
+      기회를 놓치지 않고 보완하며,<br />
+      도전에 마다하지 않으며 희망에 도약한다.
+    </p>
 
-  class Ember {
-    constructor(scatter) {
-      this.scatter = scatter;
-      this.reset();
-      if (scatter) { this.y = Math.random() * H; this.alpha *= Math.random(); }
-    }
-    reset() {
-      // Spawn in a loose band around horizontal centre
-      this.x     = W * 0.25 + Math.random() * W * 0.5;
-      this.y     = H * 0.72 + Math.random() * H * 0.15;
-      this.vx    = (Math.random() - 0.5) * 0.5;
-      this.vy    = -(0.35 + Math.random() * 1.1);
-      this.r     = 0.6 + Math.random() * 1.8;
-      this.alpha = 0.55 + Math.random() * 0.4;
-      this.decay = 0.003 + Math.random() * 0.005;
-      this.col   = COLORS[Math.floor(Math.random() * COLORS.length)];
-      this.age   = 0;
-    }
-    update() {
-      this.x += this.vx + Math.sin(this.age * 0.04) * 0.25;
-      this.y += this.vy;
-      this.alpha -= this.decay;
-      this.age++;
-      if (this.alpha <= 0 || this.y < -8) this.reset();
-    }
-    draw() {
-      const [r, g, b] = this.col;
-      ctx.beginPath();
-      ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
-      ctx.fillStyle = `rgba(${r},${g},${b},${this.alpha.toFixed(3)})`;
-      ctx.fill();
-    }
-  }
+    <div class="acronym reveal">
+      <div class="ac-item" style="--c:var(--red)">
+        <span class="ac-letter">T</span><span class="ac-en">Technology</span><span class="ac-ko">기술</span>
+      </div>
+      <div class="ac-item" style="--c:var(--yellow)">
+        <span class="ac-letter">O</span><span class="ac-en">Opportunity</span><span class="ac-ko">기회</span>
+      </div>
+      <div class="ac-item" style="--c:var(--green)">
+        <span class="ac-letter">R</span><span class="ac-en">Redeem</span><span class="ac-ko">보완</span>
+      </div>
+      <div class="ac-item" style="--c:var(--blue)">
+        <span class="ac-letter">C</span><span class="ac-en">Challenge</span><span class="ac-ko">도전</span>
+      </div>
+      <div class="ac-item" style="--c:var(--cream)">
+        <span class="ac-letter">H</span><span class="ac-en">Hope</span><span class="ac-ko">희망</span>
+      </div>
+    </div>
 
-  const COUNT   = 110;
-  const embers  = Array.from({ length: COUNT }, (_, i) => new Ember(i < COUNT * 0.7));
+    <div class="facts reveal">
+      <div class="fact"><b>4</b><span>연자</span></div>
+      <div class="fact"><b>7</b><span>시간</span></div>
+      <div class="fact"><b>1</b><span>DAY</span></div>
+      <div class="fact"><b>60,000</b><span>사전 등록비</span></div>
+    </div>
+  </div>
+</section>
 
-  function frame() {
-    ctx.clearRect(0, 0, W, H);
-    embers.forEach(e => { e.update(); e.draw(); });
-    requestAnimationFrame(frame);
-  }
-  frame();
-})();
-</script>
+<!-- ══ SPEAKERS ═════════════════════════════════════ -->
+<section class="speakers-intro section" id="speakers">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="sec-num">02</span>
+      <h2>4인의 연자,<br />하나의 불빛</h2>
+      <p class="sec-sub">Speakers</p>
+    </div>
+    <div class="sp-roster reveal">
+      <a class="rst" href="#speaker-1" style="--c:var(--red)"><em>01</em><b>윤종욱</b><span>치과기공사</span></a>
+      <a class="rst" href="#speaker-2" style="--c:var(--yellow)"><em>02</em><b>김우현</b><span>치과의사</span></a>
+      <a class="rst" href="#speaker-3" style="--c:var(--green)"><em>03</em><b>이성복</b><span>치과의사</span></a>
+      <a class="rst" href="#speaker-4" style="--c:var(--blue)"><em>04</em><b>구재윤</b><span>치과기공사</span></a>
+    </div>
+  </div>
+</section>
 
+<!-- ── Speaker 01 ─────────────────────────────────── -->
+<section class="speaker" id="speaker-1" style="--c:var(--red); --crgb:232,53,42">
+  <span class="sp-ghost" aria-hidden="true">01</span>
+  <div class="wrap sp-grid">
+    <figure class="sp-figure reveal">
+      <img src="images/speakers/01_yoon_jongwook.png" alt="윤종욱 치과기공사" loading="lazy" />
+    </figure>
+    <div class="sp-content reveal">
+      <span class="sp-session">Session 01 · 10:00 — 11:10</span>
+      <h3 class="sp-name">윤종욱<em>치과기공사</em></h3>
+      <p class="sp-title-ko">최소 삭제 &amp; 기능적 심미</p>
+      <p class="sp-title-en">bi-laminar veneer &amp; overlay</p>
+      <ul class="sp-tags">
+        <li>Minimal Prep</li><li>Veneer</li><li>Overlay</li><li>Function &amp; Aesthetics</li>
+      </ul>
+      <div class="sp-meta">
+        <div><span>SESSION</span><b>70분</b></div>
+        <div><span>TRACK</span><b>심미 보철</b></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Speaker 02 ─────────────────────────────────── -->
+<section class="speaker speaker-rev" id="speaker-2" style="--c:var(--yellow); --crgb:245,201,24">
+  <span class="sp-ghost" aria-hidden="true">02</span>
+  <div class="wrap sp-grid">
+    <figure class="sp-figure reveal">
+      <img src="images/speakers/02_kim_woohyun.png" alt="김우현 치과의사" loading="lazy" />
+    </figure>
+    <div class="sp-content reveal">
+      <span class="sp-session">Session 02 · 11:30 — 12:40</span>
+      <h3 class="sp-name">김우현<em>치과의사</em></h3>
+      <p class="sp-title-ko">Canine Aesthetics Follows<br />Canine Function!?</p>
+      <p class="sp-title-en">견치의 심미는 기능을 따른다</p>
+      <ul class="sp-tags">
+        <li>Canine Guidance</li><li>Occlusion</li><li>Aesthetics</li><li>Function</li>
+      </ul>
+      <div class="sp-meta">
+        <div><span>SESSION</span><b>70분</b></div>
+        <div><span>TRACK</span><b>교합 · 기능</b></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Speaker 03 ─────────────────────────────────── -->
+<section class="speaker" id="speaker-3" style="--c:var(--green); --crgb:46,168,74">
+  <span class="sp-ghost" aria-hidden="true">03</span>
+  <div class="wrap sp-grid">
+    <figure class="sp-figure reveal">
+      <img src="images/speakers/03_lee_seongbok.png" alt="이성복 치과의사" loading="lazy" />
+    </figure>
+    <div class="sp-content reveal">
+      <span class="sp-session">Session 03 · 14:20 — 15:40</span>
+      <h3 class="sp-name">이성복<em>치과의사</em></h3>
+      <p class="sp-title-ko">밝히고 싶지 않은<br />All-on-X의 취약점</p>
+      <p class="sp-title-en">The weak points of All-on-X</p>
+      <ul class="sp-tags">
+        <li>All-on-X</li><li>Full Arch</li><li>Implant</li><li>Complication</li>
+      </ul>
+      <div class="sp-meta">
+        <div><span>SESSION</span><b>80분</b></div>
+        <div><span>TRACK</span><b>임플란트 보철</b></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Speaker 04 ─────────────────────────────────── -->
+<section class="speaker speaker-rev" id="speaker-4" style="--c:var(--blue); --crgb:31,111,208">
+  <span class="sp-ghost" aria-hidden="true">04</span>
+  <div class="wrap sp-grid">
+    <figure class="sp-figure reveal">
+      <img src="images/speakers/04_koo_jaeyoon.png" alt="구재윤 치과기공사" loading="lazy" />
+    </figure>
+    <div class="sp-content reveal">
+      <span class="sp-session">Session 04 · 15:50 — 17:00</span>
+      <h3 class="sp-name">구재윤<em>치과기공사</em></h3>
+      <p class="sp-title-ko">내가 AI로 직접 만들고<br />배포하는 치과기공소 웹사이트</p>
+      <p class="sp-title-en">Build &amp; deploy your own lab website with AI</p>
+      <ul class="sp-tags">
+        <li>AI</li><li>Web</li><li>Lab Branding</li><li>Deploy</li>
+      </ul>
+      <div class="sp-meta">
+        <div><span>SESSION</span><b>70분</b></div>
+        <div><span>TRACK</span><b>디지털 · 브랜딩</b></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ PROGRAM ══════════════════════════════════════ -->
+<section class="section section-alt" id="program">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="sec-num">03</span>
+      <h2>프로그램</h2>
+      <p class="sec-sub">2026.12.13 SUN · 10:00 — 17:00</p>
+    </div>
+
+    <ol class="timeline">
+      <li class="tl reveal" style="--c:var(--red)">
+        <span class="tl-time">10:00<em>11:10</em></span>
+        <div class="tl-body">
+          <h3>최소 삭제 &amp; 기능적 심미 : bi-laminar veneer &amp; overlay</h3>
+          <p>윤종욱 <span>치과기공사</span></p>
+        </div>
+      </li>
+      <li class="tl tl-break reveal">
+        <span class="tl-time">11:10<em>11:30</em></span>
+        <div class="tl-body"><h3>Break</h3></div>
+      </li>
+      <li class="tl reveal" style="--c:var(--yellow)">
+        <span class="tl-time">11:30<em>12:40</em></span>
+        <div class="tl-body">
+          <h3>Canine Aesthetics Follows Canine Function!?</h3>
+          <p>김우현 <span>치과의사</span></p>
+        </div>
+      </li>
+      <li class="tl tl-break reveal">
+        <span class="tl-time">12:40<em>14:20</em></span>
+        <div class="tl-body"><h3>Lunch</h3></div>
+      </li>
+      <li class="tl reveal" style="--c:var(--green)">
+        <span class="tl-time">14:20<em>15:40</em></span>
+        <div class="tl-body">
+          <h3>밝히고 싶지 않은 All-on-X의 취약점</h3>
+          <p>이성복 <span>치과의사</span></p>
+        </div>
+      </li>
+      <li class="tl tl-break reveal">
+        <span class="tl-time">15:40<em>15:50</em></span>
+        <div class="tl-body"><h3>Break</h3></div>
+      </li>
+      <li class="tl reveal" style="--c:var(--blue)">
+        <span class="tl-time">15:50<em>17:00</em></span>
+        <div class="tl-body">
+          <h3>내가 AI로 직접 만들고 배포하는 치과기공소 웹사이트</h3>
+          <p>구재윤 <span>치과기공사</span></p>
+        </div>
+      </li>
+    </ol>
+  </div>
+</section>
+
+<!-- ══ REGISTRATION ═════════════════════════════════ -->
+<section class="section" id="register">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="sec-num">04</span>
+      <h2>참가신청</h2>
+      <p class="sec-sub">Registration</p>
+    </div>
+
+    <div class="reg-grid">
+      <div class="price-card reveal">
+        <span class="pc-tag">사전 등록</span>
+        <div class="pc-price" id="earlyFee">60,000<em>원</em></div>
+        <p class="pc-period">2026.11.16 — 11.30</p>
+        <p class="pc-note">기간 내 입금 완료 시 사전 등록가 적용</p>
+      </div>
+      <div class="price-card price-card-alt reveal">
+        <span class="pc-tag">현장 등록</span>
+        <div class="pc-price" id="onsiteFee">80,000<em>원</em></div>
+        <p class="pc-period">2026.12.13 현장 접수</p>
+        <p class="pc-note">좌석 상황에 따라 마감될 수 있습니다</p>
+      </div>
+      <div class="account reveal">
+        <span class="ac-tag">입금 계좌</span>
+        <div class="ac-num" id="acctNum">3333-38-2197227</div>
+        <p class="ac-bank">카카오뱅크 · 예금주 <b>김다은</b></p>
+        <button class="btn btn-ghost btn-sm" id="copyAcct" type="button">계좌번호 복사</button>
+        <p class="ac-hint">입금자명은 <b>참가자 성함</b>으로 기재해 주세요.</p>
+      </div>
+    </div>
+
+    <div class="steps reveal">
+      <div class="step"><span>01</span><p>아래 <b>신청 양식</b> 작성 후 제출</p></div>
+      <div class="step"><span>02</span><p>안내된 계좌로 등록비 입금 (입금자명 = 참가자 성함)</p></div>
+      <div class="step"><span>03</span><p>입금 확인 후 등록 완료 · 당일 현장 접수처에서 확인</p></div>
+    </div>
+
+    <!-- ── Form ── -->
+    <div class="form-card reveal" id="formCard">
+      <div class="form-head">
+        <h3>신청 양식</h3>
+        <p id="regStatusLine">온라인 사전등록 접수 중</p>
+      </div>
+
+      <form id="regForm" novalidate>
+        <div class="field">
+          <label for="f-name">성함 <i>*</i></label>
+          <input type="text" id="f-name" name="name" required maxlength="40" autocomplete="name" placeholder="홍길동" />
+        </div>
+        <div class="field">
+          <label for="f-phone">연락처 <i>*</i></label>
+          <input type="tel" id="f-phone" name="phone" required maxlength="20" autocomplete="tel" placeholder="010-0000-0000" inputmode="tel" />
+        </div>
+        <div class="field">
+          <label for="f-email">이메일</label>
+          <input type="email" id="f-email" name="email" maxlength="120" autocomplete="email" placeholder="name@example.com" />
+        </div>
+        <div class="field">
+          <label for="f-job">직군</label>
+          <select id="f-job" name="job">
+            <option value="치과기공사">치과기공사</option>
+            <option value="치과의사">치과의사</option>
+            <option value="학생">학생</option>
+            <option value="기타">기타</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="f-aff">소속</label>
+          <input type="text" id="f-aff" name="affiliation" maxlength="80" placeholder="○○치과기공소 / ○○치과 / ○○대학교" />
+        </div>
+        <div class="field">
+          <label for="f-dep">입금자명</label>
+          <input type="text" id="f-dep" name="depositor" maxlength="40" placeholder="성함과 다를 경우에만 입력" />
+        </div>
+        <div class="field field-full">
+          <label for="f-memo">남기실 말씀</label>
+          <textarea id="f-memo" name="memo" rows="3" maxlength="500" placeholder="식사·주차·기타 문의사항이 있으시면 적어 주세요"></textarea>
+        </div>
+
+        <label class="check field-full">
+          <input type="checkbox" id="f-agree" name="agree" />
+          <span>개인정보 수집·이용에 동의합니다. <a href="#" id="privacyLink">자세히</a></span>
+        </label>
+
+        <div class="form-foot field-full">
+          <button class="btn" type="submit" id="submitBtn">신청서 제출</button>
+          <p class="form-msg" id="formMsg" role="status"></p>
+        </div>
+      </form>
+
+      <div class="form-done" id="formDone" hidden>
+        <span class="fd-mark">✓</span>
+        <h3>신청이 접수되었습니다</h3>
+        <p>아래 계좌로 등록비를 입금해 주시면 확인 후 등록이 확정됩니다.</p>
+        <div class="fd-acct">카카오뱅크 <b>3333-38-2197227</b> 김다은</div>
+        <button class="btn btn-ghost btn-sm" type="button" id="againBtn">다른 사람 신청하기</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ VENUE ════════════════════════════════════════ -->
+<section class="section section-alt" id="venue">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="sec-num">05</span>
+      <h2>오시는 길</h2>
+      <p class="sec-sub">Venue</p>
+    </div>
+
+    <div class="venue-grid">
+      <div class="venue-info reveal">
+        <h3>신흥빌딩 11층</h3>
+        <p class="v-addr">서울시 중구 청파로 450</p>
+        <dl class="v-list">
+          <div><dt>일시</dt><dd>2026.12.13 (일) 10:00 — 17:00</dd></div>
+          <div><dt>문의</dt><dd><a href="https://instagram.com/t_o_r_c_h_study" target="_blank" rel="noopener">Instagram @t_o_r_c_h_study</a></dd></div>
+        </dl>
+        <div class="v-btns">
+          <a class="btn btn-ghost btn-sm" href="https://map.naver.com/p/search/서울시%20중구%20청파로%20450" target="_blank" rel="noopener">네이버 지도</a>
+          <a class="btn btn-ghost btn-sm" href="https://map.kakao.com/?q=서울시%20중구%20청파로%20450" target="_blank" rel="noopener">카카오맵</a>
+        </div>
+      </div>
+
+      <figure class="poster reveal">
+        <img src="/api/poster" alt="T.O.R.C.H 2026 Symposium 포스터" loading="lazy" id="posterImg"
+             onerror="this.onerror=null;this.src='images/poster.png'" />
+        <figcaption>포스터 · 클릭하면 크게 보입니다</figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
+</main>
+
+<!-- ══ FOOTER ═══════════════════════════════════════ -->
+<footer class="footer">
+  <div class="wrap footer-in">
+    <div>
+      <p class="f-logo">T.O.R.C.H <span>2026 Symposium</span></p>
+      <p class="f-slogan">Technology · Opportunity · Redeem · Challenge</p>
+    </div>
+    <div class="f-right">
+      <a href="https://instagram.com/t_o_r_c_h_study" target="_blank" rel="noopener">@t_o_r_c_h_study</a>
+      <p>2026.12.13 · 서울시 중구 청파로 450 신흥빌딩 11층</p>
+      <p class="f-admin"><a href="/admin/">관리자</a></p>
+    </div>
+  </div>
+</footer>
+
+<!-- Poster lightbox -->
+<div class="lightbox" id="lightbox" hidden>
+  <button class="lb-close" id="lbClose" aria-label="닫기">×</button>
+  <img src="images/poster.png" alt="T.O.R.C.H 2026 Symposium 포스터" id="lbImg" />
+</div>
+
+<!-- 개인정보 안내 -->
+<div class="lightbox" id="privacyBox" hidden>
+  <button class="lb-close" id="pvClose" aria-label="닫기">×</button>
+  <div class="privacy-doc">
+    <h3>개인정보 수집·이용 안내</h3>
+    <p><b>수집 항목</b> · 성함, 연락처, 이메일, 소속, 직군, 입금자명, 남기신 말씀</p>
+    <p><b>수집 목적</b> · 심포지엄 참가 등록 확인, 입금 확인, 행사 관련 안내</p>
+    <p><b>보유 기간</b> · 행사 종료 후 6개월 이내 파기</p>
+    <p><b>동의 거부 권리</b> · 동의를 거부하실 수 있으나, 이 경우 온라인 참가 신청이 제한됩니다.</p>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="js/main.js"></script>
 </body>
 </html>

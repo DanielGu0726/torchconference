@@ -1,0 +1,17 @@
+name = "torchconference"
+compatibility_date = "2026-08-01"
+pages_build_output_dir = "."
+
+# torchstudy-db 를 공유한다 (계정 D1 개수 제한). 테이블은 conf_ prefix 로 격리.
+[[d1_databases]]
+binding       = "DB"
+database_name = "torchstudy-db"
+database_id   = "173b003c-f902-41d1-ada9-54824be6b2de"
+
+[[r2_buckets]]
+binding     = "MEDIA"
+bucket_name = "torchconf-media"
+
+# Secrets (대시보드 또는 `wrangler pages secret put` 로 설정)
+#   ADMIN_PASSWORD
+#   JWT_SECRET
