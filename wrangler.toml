@@ -2,11 +2,11 @@ name = "torchconference"
 compatibility_date = "2026-08-01"
 pages_build_output_dir = "."
 
-# torchstudy-db 를 공유한다 (계정 D1 개수 제한). 테이블은 conf_ prefix 로 격리.
+# Cloudflare 계정: Mobimon0217@gmail.com (9936d540d5f7b8b5baf43cac34c8eef2)
 [[d1_databases]]
 binding       = "DB"
-database_name = "torchstudy-db"
-database_id   = "173b003c-f902-41d1-ada9-54824be6b2de"
+database_name = "torchconf-db"
+database_id   = "62462306-1126-4b39-91aa-ce8db5586c99"
 
 [[r2_buckets]]
 binding     = "MEDIA"

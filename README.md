@@ -2,15 +2,15 @@
 
 2026.12.13 (일) 10:00–17:00 · 서울시 중구 청파로 450 신흥빌딩 11층
 
-- **사이트**: https://torchconference-cu2.pages.dev
-- **관리자**: https://torchconference-cu2.pages.dev/admin/
+- **사이트**: https://torchconference.pages.dev
+- **관리자**: https://torchconference.pages.dev/admin/
 
 ## 스택
 - 정적 HTML/CSS/JS (프레임워크 없음) + Cloudflare Pages Functions
-- **D1**: `torchstudy-db` 공유 (계정 D1 개수 제한). 테이블은 모두 `conf_` prefix
+- **D1**: `torchconf-db` (`62462306-1126-4b39-91aa-ce8db5586c99`). 테이블은 모두 `conf_` prefix
 - **R2**: `torchconf-media` (포스터 `poster/` prefix)
 - **Secrets**: `ADMIN_PASSWORD`, `JWT_SECRET` (Pages secret)
-- CF 계정: Tjmds99@gmail.com (`d542d8c5cbfb3917ee7e615e980c1892`)
+- CF 계정: **Mobimon0217@gmail.com** (`9936d540d5f7b8b5baf43cac34c8eef2`)
 
 ## 구조
 ```
@@ -34,13 +34,13 @@ schema.sql            D1 스키마 (conf_registrations / conf_settings / conf_ad
 
 ## 운영
 ```bash
-export CLOUDFLARE_ACCOUNT_ID=d542d8c5cbfb3917ee7e615e980c1892
+export CLOUDFLARE_ACCOUNT_ID=9936d540d5f7b8b5baf43cac34c8eef2
 
 # 배포
 npx wrangler pages deploy . --project-name torchconference --branch master
 
 # 스키마 재적용
-npx wrangler d1 execute torchstudy-db --remote --file=schema.sql
+npx wrangler d1 execute torchconf-db --remote --file=schema.sql
 
 # 비밀번호 변경 (줄바꿈 들어가지 않게 printf 사용!)
 printf '새비밀번호' | npx wrangler pages secret put ADMIN_PASSWORD --project-name torchconference
